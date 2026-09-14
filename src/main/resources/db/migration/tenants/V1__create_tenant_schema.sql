@@ -1,0 +1,27 @@
+CREATE TABLE clients (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT,
+    phone TEXT,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE accounts (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL,
+    balance NUMERIC(15,2) NOT NULL DEFAULT 0,
+    client_id BIGINT REFERENCES clients(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE invoices (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    invoice_number TEXT NOT NULL UNIQUE,
+    client_id BIGINT NOT NULL REFERENCES clients(id),
+    amount NUMERIC(15,2) NOT NULL,
+    status TEXT NOT NULL DEFAULT 'PENDING',
+    issued_at DATE NOT NULL DEFAULT CURRENT_DATE,
+    due_at DATE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
